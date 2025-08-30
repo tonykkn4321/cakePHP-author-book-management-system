@@ -67,5 +67,37 @@ bin/cake bake model Books
 bin/cake bake controller Authors
 bin/cake bake controller Books
 
+# Modify src/Application.php to skip CSRF protection for API routes:
+public function middleware(MiddlewareQueue $middlewareQueue): MiddlewareQueue
+{
+    $csrf = new CsrfProtectionMiddleware([
+        'httponly' => true,
+    ]);
+
+    $middlewareQueue
+        // Catch any exceptions in the lower layers,
+        // and make an error page/response
+        ->add(new ErrorHandlerMiddleware(Configure::read('Error'), $this))
+
+        // Handle plugin/theme assets like CakePHP normally does.
+        ->add(new AssetMiddleware([
+            'cacheTime' => Configure::read('Asset.cacheTime'),
+        ]))
+
+        // Add routing middleware.
+        ->add(new RoutingMiddleware($this))
+
+        // Parse various types of encoded request bodies
+        ->add(new BodyParserMiddleware())
+
+        // Skip CSRF protection for API routes
+        ->add($csrf->skipCheckCallback(function ($request) {
+            return str_starts_with($request->getPath(), '/api/');
+        }));
+
+    return $middlewareQueue;
+}
+
+
 # Run built-in server:
 bin/cake server

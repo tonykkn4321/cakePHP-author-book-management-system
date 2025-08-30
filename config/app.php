@@ -11,6 +11,7 @@ $env = getenv('RAILWAY_ENVIRONMENT_NAME') ?: 'development';
 $databaseUrl = getenv('DATABASE_URL');
 $productionConfig = [];
 
+// Database configuration for production
 if ($databaseUrl) {
     $url = parse_url($databaseUrl);
     $productionConfig = [
@@ -51,11 +52,7 @@ return [
     ],
 
     'Security' => [
-        'salt' => '2aa60cfdc5cb8dad9460cf5b63f0a40b1fceedbc919ef7e3d0708a0dd6111ea4',
-    ],
-
-    'Asset' => [
-        //'timestamp' => true,
+        'salt' => env('SECURITY_SALT', 'your_random_salt_here'),
     ],
 
     'Cache' => [
@@ -87,7 +84,6 @@ return [
         'skipLog' => [],
         'log' => true,
         'trace' => true,
-        'ignoredDeprecationPaths' => [],
     ],
 
     'Debugger' => [
@@ -135,23 +131,18 @@ return [
             'className' => FileLog::class,
             'path' => LOGS,
             'file' => 'debug',
-            'url' => env('LOG_DEBUG_URL', null),
-            'scopes' => null,
             'levels' => ['notice', 'info', 'debug'],
         ],
         'error' => [
             'className' => FileLog::class,
             'path' => LOGS,
             'file' => 'error',
-            'url' => env('LOG_ERROR_URL', null),
-            'scopes' => null,
             'levels' => ['warning', 'error', 'critical', 'alert', 'emergency'],
         ],
         'queries' => [
             'className' => FileLog::class,
             'path' => LOGS,
             'file' => 'queries',
-            'url' => env('LOG_QUERIES_URL', null),
             'scopes' => ['cake.database.queries'],
         ],
     ],
@@ -162,7 +153,6 @@ return [
 
     'DebugKit' => [
         'forceEnable' => filter_var(env('DEBUG_KIT_FORCE_ENABLE', false), FILTER_VALIDATE_BOOLEAN),
-        'safeTld' => env('DEBUG_KIT_SAFE_TLD', null),
         'ignoreAuthorization' => env('DEBUG_KIT_IGNORE_AUTHORIZATION', false),
     ],
 

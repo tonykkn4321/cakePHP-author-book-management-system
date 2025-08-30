@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-// In src/Controller/BooksController.php
 namespace App\Controller;
 
 use App\Controller\AppController;
+use Cake\Http\Exception\NotFoundException;
 
 class BooksController extends AppController
 {
@@ -12,12 +12,17 @@ class BooksController extends AppController
     {
         $books = $this->Books->find('all')->contain(['Authors']);
         $this->set(compact('books'));
+        $this->viewBuilder()->setOption('serialize', ['books']);
     }
 
     public function view($id = null)
     {
         $book = $this->Books->get($id, ['contain' => ['Authors']]);
+        if (!$book) {
+            throw new NotFoundException(__('Book not found'));
+        }
         $this->set(compact('book'));
+        $this->viewBuilder()->setOption('serialize', ['book']);
     }
 
     public function add()
@@ -26,37 +31,43 @@ class BooksController extends AppController
         if ($this->request->is('post')) {
             $book = $this->Books->patchEntity($book, $this->request->getData());
             if ($this->Books->save($book)) {
-                $this->Flash->success(__('The book has been saved.'));
-                return $this->redirect(['action' => 'index']);
+                $this->set(compact('book'));
+                $this->viewBuilder()->setOption('serialize', ['book']);
+                $this->response = $this->response->withStatus(201); // HTTP Created
+            } else {
+                $this->response = $this->response->withStatus(400); // Bad Request
             }
-            $this->Flash->error(__('Unable to add the book.'));
         }
-        $this->set('book', $book);
     }
 
     public function edit($id = null)
     {
         $book = $this->Books->get($id);
-        if ($this->request->is(['patch', 'post', 'put'])) {
-            $book = $this->Books->patchEntity($book, $this->request->getData());
-            if ($this->Books->save($book)) {
-                $this->Flash->success(__('The book has been updated.'));
-                return $this->redirect(['action' => 'index']);
-            }
-            $this->Flash->error(__('Unable to update the book.'));
+        if (!$book) {
+            throw new NotFoundException(__('Book not found'));
         }
-        $this->set(compact('book'));
+        if ($this->request->is(['patch', 'post', 'put'])) {
+            $this->Books->patchEntity($book, $this->request->getData());
+            if ($this->Books->save($book)) {
+                $this->set(compact('book'));
+                $this->viewBuilder()->setOption('serialize', ['book']);
+            } else {
+                $this->response = $this->response->withStatus(400); // Bad Request
+            }
+        }
     }
 
     public function delete($id = null)
     {
         $this->request->allowMethod(['post', 'delete']);
         $book = $this->Books->get($id);
-        if ($this->Books->delete($book)) {
-            $this->Flash->success(__('The book has been deleted.'));
-        } else {
-            $this->Flash->error(__('Unable to delete the book.'));
+        if (!$book) {
+            throw new NotFoundException(__('Book not found'));
         }
-        return $this->redirect(['action' => 'index']);
+        if ($this->Books->delete($book)) {
+            $this->response = $this->response->withStatus(204); // No Content
+        } else {
+            $this->response = $this->response->withStatus(400); // Bad Request
+        }
     }
 }
