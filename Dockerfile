@@ -22,6 +22,9 @@ WORKDIR /var/www/html
 # Copy app files
 COPY . .
 
+# Make CakePHP CLI executable
+RUN chmod +x bin/cake
+
 # Set permissions
 RUN chown -R www-data:www-data /var/www/html
 
@@ -29,7 +32,7 @@ RUN chown -R www-data:www-data /var/www/html
 RUN composer install --no-interaction --optimize-autoloader
 
 # Run migrations on container start
-CMD bin/cake migrations migrate && apache2-foreground
+CMD ["sh", "-c", "bin/cake migrations migrate && apache2-foreground"]
 
 # Expose port
 EXPOSE 80
