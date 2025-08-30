@@ -1,3 +1,13 @@
 {
-  "startCommand": "apache2-foreground"
+  "startCommand": "apache2-foreground",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "install": {
+    "php": "8.0",
+    "extensions": [
+      "pdo",
+      "pdo_pgsql"
+    ]
+  }
 }
