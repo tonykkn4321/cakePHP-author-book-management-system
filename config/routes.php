@@ -24,6 +24,11 @@
 use Cake\Routing\Route\DashedRoute;
 use Cake\Routing\RouteBuilder;
 
+Router::scope('/', function ($routes) {
+    $routes->connect('/', ['controller' => 'Authors', 'action' => 'index']);
+    $routes->fallbacks(DashedRoute::class);
+});
+
 /*
  * This file is loaded in the context of the `Application` class.
  * So you can use `$this` to reference the application class instance
@@ -94,3 +99,4 @@ return function (RouteBuilder $routes): void {
      * ```
      */
 };
+
