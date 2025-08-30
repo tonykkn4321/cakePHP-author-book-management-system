@@ -8,7 +8,8 @@ RUN apt-get update && apt-get install -y \
     git \
     zip \
     curl \
-    && docker-php-ext-install intl pdo pdo_pgsql pgsql
+    && docker-php-ext-install pdo pdo_pgsql
+    
 
 # Enable Apache mod_rewrite
 RUN a2enmod rewrite
