@@ -111,29 +111,19 @@ return [
 
     'Datasources' => [
         'default' => $env === 'production' ? $productionConfig : [
-            'driver' => 'Cake\Database\Driver\Postgres',
-            'host' => $url['host'],
-            'username' => $url['user'],
-            'password' => $url['pass'],
-            'database' => ltrim($url['path'], '/'),
-            'port' => $url['port'],
+    
+            'driver' => 'Cake\Database\Driver\Mysql',
+            'url' => sprintf(
+            'mysql://%s:%s@%s/%s',
+            'root', // Your MySQL username
+            'Aa161616', // Your MySQL password
+            'localhost', // Host
+            'author_book_management_system' // Database name
+             ),
             'encoding' => 'utf8',
             'timezone' => 'UTC',
             'cacheMetadata' => true,
             'quoteIdentifiers' => false,
-            
-            //'driver' => 'Cake\Database\Driver\Mysql',
-            //'url' => sprintf(
-            //    'mysql://%s:%s@%s/%s',
-            //    'root', // Your MySQL username
-            //    'Aa161616', // Your MySQL password
-            //    'localhost', // Host
-            //    'author_book_management_system' // Database name
-           //),
-            //'encoding' => 'utf8',
-            //'timezone' => 'UTC',
-            //'cacheMetadata' => true,
-            //'quoteIdentifiers' => false,
 
         ],
     ],
