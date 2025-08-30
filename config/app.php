@@ -111,7 +111,7 @@ return [
 
     'Datasources' => [
         'default' => $env === 'production' ? $productionConfig : [
-            'driver' => 'Postgres'
+            'driver' => 'Postgres',
             #'driver' => 'Cake\Database\Driver\Postgres',
             'host' => $url['host'],
             'username' => $url['user'],
