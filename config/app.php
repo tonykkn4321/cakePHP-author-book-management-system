@@ -12,26 +12,21 @@ $databaseUrl = getenv('DATABASE_URL');
 $productionConfig = [];
 
 // Database configuration for production
-//if ($databaseUrl) {
-//    $url = parse_url($databaseUrl);
-//    $productionConfig = [
-//        'driver' => 'Cake\Database\Driver\Postgres',
-//        'host' => $url['host'],
-//        'username' => $url['user'],
-//        'password' => $url['pass'],
-//        'database' => ltrim($url['path'], '/'),
-//        'port' => $url['port'],
-//        'encoding' => 'utf8',
-//        'timezone' => 'UTC',
-//        'cacheMetadata' => true,
-//       'quoteIdentifiers' => false,
-//    ];
-//}
-
 if ($databaseUrl) {
-    $productionConfig = Connection::fromUrl($databaseUrl)->config();
+    $url = parse_url($databaseUrl);
+    $productionConfig = [
+        'driver' => 'Cake\Database\Driver\Postgres',
+        'host' => $url['host'],
+        'username' => $url['user'],
+        'password' => $url['pass'],
+        'database' => ltrim($url['path'], '/'),
+        'port' => $url['port'],
+        'encoding' => 'utf8',
+        'timezone' => 'UTC',
+        'cacheMetadata' => true,
+       'quoteIdentifiers' => false,
+    ];
 }
-
 
 return [
     'debug' => filter_var(env('DEBUG', false), FILTER_VALIDATE_BOOLEAN),
